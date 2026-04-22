@@ -1,26 +1,117 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ── Tailwind v4 theme tokens ─────────────────────────────────────────────── */
+@theme {
+  --color-orange:       #f9840c;
+  --color-orange-dark:  #e07008;
+  --color-orange-light: #ffac50;
+  --color-primary:      #0c0e15;
+  --color-secondary:    #adb7be;
+  --color-surface:      #141826;
+
+  --shadow-orange:    0 0 20px rgba(249,132,12,0.20);
+  --shadow-orange-lg: 0 0 40px rgba(249,132,12,0.38);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ── Base reset ────────────────────────────────────────────────────────────── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #0c0e15;
+  color: #ffffff;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
+
+canvas { display: block; }
+
+/* ── Gradient text ─────────────────────────────────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, #f9840c 0%, #ffac50 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Glowing border ────────────────────────────────────────────────────────── */
+.glow-border {
+  border: 1px solid rgba(249, 132, 12, 0.2);
+  box-shadow: 0 0 20px rgba(249, 132, 12, 0.08);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.glow-border:hover {
+  border-color: rgba(249, 132, 12, 0.5);
+  box-shadow: 0 0 40px rgba(249, 132, 12, 0.2);
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #0a0d14; }
+::-webkit-scrollbar-thumb { background: #f9840c; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #ffac50; }
+
+/* ── Glass morphism ────────────────────────────────────────────────────────── */
+.glass {
+  background: rgba(20, 24, 38, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ── Dot grid pattern ──────────────────────────────────────────────────────── */
+.dot-grid {
+  background-image: radial-gradient(circle, rgba(249, 132, 12, 0.12) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* ── Mesh gradient ─────────────────────────────────────────────────────────── */
+.mesh-gradient {
+  background:
+    radial-gradient(ellipse 60% 50% at 0% 0%, rgba(249, 132, 12, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 100% 100%, rgba(249, 132, 12, 0.04) 0%, transparent 60%);
+}
+
+/* ── Cinematic vignette ────────────────────────────────────────────────────── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  background:
+    radial-gradient(ellipse 80% 80% at 50% 50%, transparent 48%, rgba(0, 0, 0, 0.62) 100%),
+    radial-gradient(ellipse 120% 30% at 50% 0%,   rgba(249,132,12,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 120% 30% at 50% 100%,  rgba(0, 0, 0, 0.3) 0%, transparent 60%);
+}
+
+/* ── Section divider ───────────────────────────────────────────────────────── */
+.section-divider {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(90deg, transparent, rgba(249,132,12,0.3) 50%, transparent);
+  position: relative;
+}
+.section-divider::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -8px;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 16px;
+  background: radial-gradient(ellipse at center, rgba(249,132,12,0.35) 0%, transparent 70%);
+  filter: blur(4px);
+}
+
+/* ── Orange shadow utilities ───────────────────────────────────────────────── */
+.shadow-orange    { box-shadow: 0 0 20px rgba(249, 132, 12, 0.20); }
+.shadow-orange-lg { box-shadow: 0 0 40px rgba(249, 132, 12, 0.38); }
+
+/* ── Scrollbar hide ────────────────────────────────────────────────────────── */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
