@@ -1,5 +1,6 @@
 'use client';
 import dynamic from "next/dynamic";
+import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -9,7 +10,9 @@ export default function ProductPageWrapper({ id }: { id: string }) {
   return (
     <div className="relative z-0 bg-primary">
       <Navbar />
-      <ProductPage id={id} />
+      <ErrorBoundary fallback={null}>
+        <ProductPage id={id} />
+      </ErrorBoundary>
       <Footer />
     </div>
   );
