@@ -1,241 +1,415 @@
 'use client';
-import { Suspense, useRef, useState, useEffect, useMemo } from "react";
+import { Suspense, useRef, useState, useMemo, useEffect } from "react";
 import Link from "next/link";
-import { motion, useScroll, useTransform, useSpring, AnimatePresence } from "framer-motion";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { motion, AnimatePresence } from "framer-motion";
+import { Canvas, useFrame, useLoader } from "@react-three/fiber";
+import {
+  Environment, Float, Preload, ContactShadows,
+} from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { BlendFunction } from "postprocessing";
 import * as THREE from "three";
-import { Torus, Float, Preload } from "@react-three/drei";
 import { products } from "@/lib/config";
-import AnimatedGrid from "@/components/ui/AnimatedGrid";
-import Tilt3D from "@/components/ui/Tilt3D";
 
-function makeCircleSprite() {
-  const c = document.createElement("canvas");
-  c.width = 64; c.height = 64;
-  const ctx = c.getContext("2d");
-  const g = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
-  g.addColorStop(0, "rgba(255,255,255,1)");
-  g.addColorStop(0.5, "rgba(255,255,255,0.6)");
-  g.addColorStop(1, "rgba(255,255,255,0)");
-  ctx.fillStyle = g; ctx.fillRect(0, 0, 64, 64);
-  return new THREE.CanvasTexture(c);
-}
-let SPRITE = null;
+/* ──────────────────────────────────────────────────────────────
+   3D display podium — rotating plinth where the active
+   product image "floats". A cinematic orange spotlight on the
+   centre, reflective floor, and ambient fog sets the stage.
+   ────────────────────────────────────────────────────────────── */
 
-function SpotlightRings({ speed = 1 }) {
-  const g = useRef();
+function Podium() {
+  const ref = useRef();
   useFrame((s) => {
-    g.current.rotation.y = s.clock.elapsedTime * 0.25 * speed;
-    g.current.rotation.x = Math.sin(s.clock.elapsedTime * 0.4) * 0.1;
+    if (ref.current) ref.current.rotation.y = s.clock.elapsedTime * 0.18;
   });
   return (
-    <group ref={g}>
-      <Torus args={[2.0, 0.035, 16, 120]} rotation={[Math.PI / 2, 0, 0]}>
-        <meshStandardMaterial color="#f9840c" emissive="#f9840c" emissiveIntensity={4.0} metalness={1} roughness={0} />
-      </Torus>
-      <Torus args={[2.5, 0.022, 16, 120]} rotation={[1.0, 0.5, 0]}>
-        <meshStandardMaterial color="#ffac50" emissive="#ffac50" emissiveIntensity={2.5} metalness={1} roughness={0} />
-      </Torus>
-      <Torus args={[2.9, 0.014, 16, 120]} rotation={[-0.7, 1.1, 0.4]}>
-        <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={1.2} metalness={1} roughness={0} />
-      </Torus>
-      <Torus args={[3.4, 0.009, 16, 120]} rotation={[0.3, -0.8, 1.2]}>
-        <meshStandardMaterial color="#f9840c" emissive="#f9840c" emissiveIntensity={2.0} metalness={1} roughness={0} transparent opacity={0.6} />
-      </Torus>
-      <Torus args={[3.9, 0.006, 16, 100]} rotation={[0.9, 0.3, -0.8]}>
-        <meshStandardMaterial color="#ff6622" emissive="#ff6622" emissiveIntensity={1.2} metalness={1} roughness={0} transparent opacity={0.3} />
-      </Torus>
+    <group position={[0, -1.5, 0]}>
+      {/* Outer rotating rim */}
+      <mesh ref={ref}>
+        <torusGeometry args={[1.55, 0.02, 12, 128]} />
+        <meshStandardMaterial
+          color="#f9840c"
+          emissive="#f9840c"
+          emissiveIntensity={3}
+          metalness={1}
+          roughness={0}
+        />
+      </mesh>
+      {/* Inner static bevel */}
+      <mesh position={[0, -0.02, 0]}>
+        <cylinderGeometry args={[1.4, 1.5, 0.06, 64]} />
+        <meshStandardMaterial color="#0a0d14" metalness={0.85} roughness={0.2} />
+      </mesh>
+      {/* Glow disc */}
+      <mesh position={[0, 0.005, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[1.35, 64]} />
+        <meshBasicMaterial
+          color="#f9840c"
+          transparent
+          opacity={0.12}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
+      </mesh>
     </group>
   );
 }
 
-function SpotlightParticles() {
-  const pts = useRef();
-  const count = 600;
-  const pos = useMemo(() => {
-    const arr = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) {
-      const r = 2.5 + Math.random() * 2.5;
-      const theta = Math.random() * Math.PI * 2;
-      const phi   = Math.acos(2 * Math.random() - 1);
-      arr[i * 3]     = r * Math.sin(phi) * Math.cos(theta);
-      arr[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-      arr[i * 3 + 2] = r * Math.cos(phi);
+/* Orbital rings rotating around the product */
+function OrbitalCage({ active }) {
+  const g = useRef();
+  useFrame((s) => {
+    const t = s.clock.elapsedTime;
+    if (g.current) {
+      g.current.rotation.y = t * 0.18;
+      g.current.rotation.x = Math.sin(t * 0.25) * 0.06;
     }
-    return arr;
-  }, []);
+  });
+  return (
+    <group ref={g}>
+      <mesh rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[1.9, 0.012, 12, 120]} />
+        <meshStandardMaterial color="#f9840c" emissive="#f9840c" emissiveIntensity={2} metalness={1} roughness={0} transparent opacity={0.7} />
+      </mesh>
+      <mesh rotation={[1.1, 0.4, 0]}>
+        <torusGeometry args={[2.25, 0.008, 10, 120]} />
+        <meshStandardMaterial color="#ffac50" emissive="#ffac50" emissiveIntensity={1.2} metalness={1} roughness={0} transparent opacity={0.5} />
+      </mesh>
+      <mesh rotation={[-0.7, 1.0, 0.4]}>
+        <torusGeometry args={[2.55, 0.006, 10, 120]} />
+        <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={0.9} metalness={1} roughness={0} transparent opacity={0.4} />
+      </mesh>
+      <mesh rotation={[0.5, -0.8, 1.1]}>
+        <torusGeometry args={[2.9, 0.004, 8, 100]} />
+        <meshStandardMaterial color="#ff6600" emissive="#ff6600" emissiveIntensity={1.5} metalness={1} roughness={0} transparent opacity={0.35} />
+      </mesh>
+    </group>
+  );
+}
 
-  if (!SPRITE) SPRITE = makeCircleSprite();
-  useFrame((s) => { pts.current.rotation.y = s.clock.elapsedTime * 0.05; });
+/* Floating product image as a textured plane */
+function ProductPlane({ url, scrollActivity }) {
+  const tex = useLoader(THREE.TextureLoader, url);
+  const ref = useRef();
+  useEffect(() => {
+    if (tex) {
+      tex.anisotropy = 8;
+      tex.colorSpace = THREE.SRGBColorSpace;
+    }
+  }, [tex]);
+  useFrame((s) => {
+    const t = s.clock.elapsedTime;
+    if (ref.current) {
+      ref.current.position.y = 0.1 + Math.sin(t * 1.1) * 0.05;
+      ref.current.rotation.y = Math.sin(t * 0.3) * 0.08 + (scrollActivity?.current ?? 0) * 0.3;
+    }
+  });
+  return (
+    <mesh ref={ref}>
+      <planeGeometry args={[2.4, 2.4]} />
+      <meshBasicMaterial map={tex} transparent alphaTest={0.05} toneMapped={false} />
+    </mesh>
+  );
+}
+
+/* Particle sparkle around the podium */
+function SparkField() {
+  const pts = useRef();
+  const { pos, count } = useMemo(() => {
+    const count = 500;
+    const pos = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      const r = 1.8 + Math.random() * 2.5;
+      const a = Math.random() * Math.PI * 2;
+      pos[i * 3]     = Math.cos(a) * r;
+      pos[i * 3 + 1] = (Math.random() - 0.5) * 2.8;
+      pos[i * 3 + 2] = Math.sin(a) * r;
+    }
+    return { pos, count };
+  }, []);
+  useFrame((s) => {
+    if (pts.current) pts.current.rotation.y = s.clock.elapsedTime * 0.08;
+  });
   return (
     <points ref={pts}>
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" count={count} array={pos} itemSize={3} />
       </bufferGeometry>
-      <pointsMaterial size={0.11} map={SPRITE} color="#f9840c" transparent opacity={0.38} alphaTest={0.01} sizeAttenuation depthWrite={false} />
+      <pointsMaterial
+        size={0.04}
+        color="#f9840c"
+        transparent
+        opacity={0.65}
+        depthWrite={false}
+      />
     </points>
   );
 }
 
-const ProductCard = ({ id, title, subtitle, description, image, specs, isActive, onClick }) => (
-  <Tilt3D intensity={10} scale={1.025}>
-    <motion.div
-      layout
-      onClick={onClick}
-      animate={{
-        borderColor: isActive ? "rgba(249,132,12,0.55)" : "rgba(255,255,255,0.04)",
-        boxShadow: isActive ? "0 0 40px rgba(249,132,12,0.22), 0 0 0 1px rgba(249,132,12,0.15)" : "none",
-      }}
-      transition={{ duration: 0.3 }}
-      className="group relative cursor-pointer overflow-hidden rounded-2xl border bg-surface/50 backdrop-blur-sm"
-    >
-      <div className="pointer-events-none absolute inset-0 rounded-2xl transition-opacity duration-500"
-        style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(249,132,12,0.13), transparent 60%)", opacity: isActive ? 1 : 0 }} />
-      <div className="relative h-44 overflow-hidden bg-[#09090f]">
-        <motion.img src={image} alt={title} className="h-full w-full object-contain p-5"
-          animate={{ scale: isActive ? 1.12 : 1 }} transition={{ duration: 0.45 }}
-          style={{ filter: "drop-shadow(0 0 28px rgba(249,132,12,0.45))" }} />
-      </div>
-      <div className="p-5">
-        <h3 className="text-sm font-bold text-white">{title}</h3>
-        <p className="mt-0.5 font-mono text-[10px] text-orange/70">{subtitle}</p>
-        <p className="mt-2 text-xs leading-relaxed text-secondary line-clamp-2">{description}</p>
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          {specs.slice(0, 3).map((s) => (
-            <span key={s} className="rounded-md border border-orange/15 bg-orange/8 px-2 py-0.5 text-[10px] font-semibold text-orange/80">{s}</span>
-          ))}
-        </div>
-        <Link href={`/product/${id}`} onClick={(e) => e.stopPropagation()}
-          className="mt-4 flex items-center gap-1 text-xs font-semibold text-orange opacity-0 transition-opacity group-hover:opacity-100">
-          View details <span className="transition-transform group-hover:translate-x-1">→</span>
-        </Link>
-      </div>
-      <div className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-orange to-transparent transition-all duration-500"
-        style={{ width: isActive ? "100%" : "0%" }} />
-    </motion.div>
-  </Tilt3D>
-);
+function Scene({ activeImage, scrollActivity }) {
+  return (
+    <>
+      <color attach="background" args={["#04060c"]} />
+      <fogExp2 attach="fog" args={["#04060c", 0.10]} />
 
+      <ambientLight intensity={0.08} color="#223" />
+      <spotLight position={[0, 6, 2]} angle={0.5} penumbra={0.8} intensity={3.2} color="#f9840c" />
+      <pointLight position={[4, 2, 3]}   intensity={3.5} color="#f9840c" distance={15} />
+      <pointLight position={[-4, 2, -3]} intensity={1.5} color="#5aa8ff" distance={15} />
+      <pointLight position={[0, -1.2, 2]} intensity={1.8} color="#ffb066" distance={6} />
+
+      <Podium />
+      <OrbitalCage />
+
+      <Suspense fallback={null}>
+        <Float speed={1.2} rotationIntensity={0.1} floatIntensity={0.25}>
+          <ProductPlane url={activeImage} scrollActivity={scrollActivity} />
+        </Float>
+        <SparkField />
+        <ContactShadows position={[0, -1.49, 0]} opacity={0.55} scale={6} blur={2.4} far={2.2} color="#f9840c" />
+        <Environment preset="warehouse" />
+      </Suspense>
+
+      <EffectComposer multisampling={4}>
+        <Bloom intensity={1.6} luminanceThreshold={0.15} luminanceSmoothing={0.88} radius={0.85} blendFunction={BlendFunction.ADD} />
+      </EffectComposer>
+    </>
+  );
+}
+
+/* ─────────── Product catalogue panel (right column) ─────────── */
+function CatalogueItem({ product, active, onSelect, index }) {
+  return (
+    <motion.button
+      onClick={() => onSelect(index)}
+      whileHover={{ x: 4 }}
+      className={`group relative w-full overflow-hidden rounded-xl border px-4 py-3.5 text-left transition-all duration-300 ${
+        active
+          ? "border-orange/50 bg-orange/10 shadow-orange"
+          : "border-white/5 bg-surface/40 hover:border-orange/25 hover:bg-surface/60"
+      }`}
+    >
+      <div className="flex items-center gap-3">
+        <span
+          className={`mono text-[10px] font-bold tracking-widest ${
+            active ? "text-orange" : "text-orange/50"
+          }`}
+        >
+          {String(index + 1).padStart(2, "0")}
+        </span>
+        <div className="flex-1 min-w-0">
+          <p className="truncate text-sm font-bold text-white">{product.title}</p>
+          <p className="mono mt-0.5 truncate text-[10px] text-orange/60">
+            {product.subtitle}
+          </p>
+        </div>
+        <motion.span
+          animate={{ x: active ? 0 : -6, opacity: active ? 1 : 0 }}
+          className="text-orange"
+        >
+          →
+        </motion.span>
+      </div>
+      {active && (
+        <motion.div
+          layoutId="catalogue-highlight"
+          className="absolute bottom-0 left-0 h-0.5 w-full bg-gradient-to-r from-orange via-orange-light to-transparent"
+          transition={{ duration: 0.4 }}
+        />
+      )}
+    </motion.button>
+  );
+}
+
+/* ─────────── Main Products component ─────────── */
 const Products = () => {
   const containerRef = useRef(null);
-  const [manualIndex, setManualIndex] = useState(null);
-
-  const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] });
-  const scrollIndex = useTransform(scrollYProgress, [0, 1], [0, products.length - 0.001]);
-  const [scrollActiveIndex, setScrollActiveIndex] = useState(0);
-  const scrollActiveIndexRef = useRef(0);
-
-  useEffect(() => {
-    return scrollIndex.on("change", (v) => {
-      const idx = Math.min(products.length - 1, Math.floor(v));
-      if (idx !== scrollActiveIndexRef.current) {
-        scrollActiveIndexRef.current = idx;
-        setScrollActiveIndex(idx);
-        setManualIndex(null);
-      }
-    });
-  }, [scrollIndex]);
-
-  const activeIndex = manualIndex !== null ? manualIndex : scrollActiveIndex;
+  const scrollActivity = useRef(0);
+  const [activeIndex, setActiveIndex] = useState(0);
   const active = products[activeIndex];
-  const sectionHeight = products.length * 50 + 100;
+
+  // Auto-advance when user isn't interacting
+  useEffect(() => {
+    const id = setInterval(() => {
+      setActiveIndex((i) => (i + 1) % products.length);
+    }, 8000);
+    return () => clearInterval(id);
+  }, []);
+
+  // Subtle spin nudge on every change
+  useEffect(() => {
+    scrollActivity.current = 1;
+    const t = setTimeout(() => { scrollActivity.current = 0; }, 600);
+    return () => clearTimeout(t);
+  }, [activeIndex]);
 
   return (
-    <section id="products" ref={containerRef} style={{ height: `${sectionHeight}vh` }} className="relative">
-      <div className="sticky top-0 h-screen overflow-hidden bg-primary">
-        <AnimatedGrid opacity={0.3} />
-        <div className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-px w-3/4 bg-gradient-to-r from-transparent via-orange/15 to-transparent" />
+    <section
+      id="products"
+      ref={containerRef}
+      className="relative overflow-hidden bg-primary py-24 sm:py-28"
+    >
+      {/* Top glow */}
+      <div className="pointer-events-none absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-orange/30 to-transparent" />
+      <div className="pointer-events-none absolute inset-0 line-grid opacity-15" />
+      <div className="pointer-events-none absolute -left-40 top-1/3 h-[500px] w-[500px] rounded-full bg-orange/5 blur-[160px]" />
+      <div className="pointer-events-none absolute -right-40 bottom-0 h-[400px] w-[400px] rounded-full bg-orange/4 blur-[140px]" />
 
-        <div className="relative flex h-full flex-col px-6 pt-8 sm:px-16">
-          <div className="mb-6 flex items-end justify-between">
-            <div>
-              <p className="mb-1 text-xs font-bold uppercase tracking-[0.3em] text-orange">Products</p>
-              <h2 className="text-3xl font-black text-white sm:text-4xl">
-                Control systems for <span className="gradient-text">all vessel types</span>
-              </h2>
+      <div className="relative mx-auto max-w-7xl px-6 sm:px-16">
+        {/* Section header */}
+        <div className="mb-14 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="hud-label mb-3">The range · 06 products</p>
+            <h2 className="text-4xl font-black leading-[1.05] text-white sm:text-6xl">
+              Bridge-grade{" "}
+              <span className="gradient-text">controls,</span>
+              <br />
+              built in Horten.
+            </h2>
+          </div>
+          <p className="max-w-sm text-sm leading-relaxed text-secondary lg:text-right">
+            Every lever, joystick and bridge-console system is designed,
+            machined, wired and tested in-house. DNV and CRS certified.
+            Deployed worldwide via the industry&apos;s top integrators.
+          </p>
+        </div>
+
+        {/* Main showcase: 3D stage + product detail + catalogue */}
+        <div className="grid gap-6 lg:grid-cols-[1.15fr_360px]">
+          {/* LEFT: stage + detail */}
+          <div className="relative overflow-hidden rounded-3xl border border-white/5 bg-[#04060c]">
+            <div className="hud-bracket-tl" />
+            <div className="hud-bracket-tr" />
+            <div className="hud-bracket-bl" />
+            <div className="hud-bracket-br" />
+
+            {/* 3D stage */}
+            <div className="relative h-[460px] w-full sm:h-[540px]">
+              <Canvas
+                dpr={[1, 1.8]}
+                camera={{ position: [0, 0.7, 5.2], fov: 38 }}
+                gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.1 }}
+              >
+                <Scene activeImage={active.image} scrollActivity={scrollActivity} />
+                <Preload all />
+              </Canvas>
+
+              {/* Spec chips floating over stage */}
+              <div className="pointer-events-none absolute left-6 top-6 flex flex-col gap-2">
+                {active.specs.slice(0, 2).map((s, i) => (
+                  <motion.div
+                    key={s}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1 + i * 0.1 }}
+                    className="rounded-md border border-orange/30 bg-primary/80 px-3 py-1 mono text-[10px] tracking-widest text-orange backdrop-blur-md"
+                  >
+                    {s}
+                  </motion.div>
+                ))}
+              </div>
+              <div className="pointer-events-none absolute right-6 top-6 flex flex-col items-end gap-2">
+                {active.specs.slice(2, 4).map((s, i) => (
+                  <motion.div
+                    key={s}
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.15 + i * 0.1 }}
+                    className="rounded-md border border-orange/30 bg-primary/80 px-3 py-1 mono text-[10px] tracking-widest text-orange backdrop-blur-md"
+                  >
+                    {s}
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Product counter top-center */}
+              <div className="pointer-events-none absolute left-1/2 top-6 -translate-x-1/2 rounded-full border border-orange/25 bg-primary/70 px-4 py-1.5 backdrop-blur-md">
+                <span className="mono text-[10px] tracking-[0.3em] text-orange/90">
+                  {String(activeIndex + 1).padStart(2, "0")} /{" "}
+                  {String(products.length).padStart(2, "0")}
+                </span>
+              </div>
             </div>
-            <p className="hidden text-xs text-secondary sm:block">Scroll or click a product</p>
+
+            {/* Detail zone */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={active.id}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                className="relative z-10 px-8 pb-8 sm:px-12 sm:pb-12"
+              >
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                  <div>
+                    <p className="hud-label mb-2">{active.subtitle}</p>
+                    <h3 className="text-3xl font-black text-white sm:text-4xl">
+                      {active.title}
+                    </h3>
+                    <p className="mt-3 max-w-lg text-sm leading-relaxed text-secondary">
+                      {active.description}
+                    </p>
+                  </div>
+                  <Link
+                    href={`/product/${active.id}`}
+                    className="group inline-flex w-fit shrink-0 items-center gap-2 rounded-full bg-orange px-6 py-3 text-sm font-bold text-white shadow-orange transition-all hover:shadow-orange-lg hover:scale-[1.03]"
+                  >
+                    View data sheet
+                    <span className="transition-transform group-hover:translate-x-1">→</span>
+                  </Link>
+                </div>
+
+                {/* Quick spec row */}
+                <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                  {active.certifications.slice(0, 4).map((c) => (
+                    <div
+                      key={c}
+                      className="flex items-center gap-2 rounded-lg border border-white/5 bg-surface/50 px-3 py-2"
+                    >
+                      <svg
+                        className="h-4 w-4 shrink-0 text-orange"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+                      >
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                      <span className="mono text-[11px] font-bold tracking-widest text-white/80">
+                        {c}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
 
-          <div className="grid flex-1 min-h-0 gap-6 lg:grid-cols-[1fr_420px]">
-            {/* Spotlight */}
-            <div className="relative overflow-hidden rounded-3xl border border-orange/15 min-h-0">
-              <div className="absolute inset-0 bg-[#060810]">
-                <Canvas dpr={[1, 2]} camera={{ position: [0, 0, 6.5], fov: 40 }} gl={{ antialias: true, toneMapping: 4, toneMappingExposure: 1.25 }}>
-                  <ambientLight intensity={0.08} />
-                  <pointLight position={[4, 4, 4]} intensity={5} color="#f9840c" />
-                  <pointLight position={[-3, -2, -4]} intensity={1.5} color="#ffac50" />
-                  <Suspense fallback={null}>
-                    <Float speed={1.2} rotationIntensity={0.12} floatIntensity={0.25}>
-                      <SpotlightRings />
-                    </Float>
-                    <SpotlightParticles />
-                  </Suspense>
-                  <EffectComposer multisampling={4}>
-                    <Bloom intensity={2.8} luminanceThreshold={0.12} luminanceSmoothing={0.9} radius={0.85} blendFunction={BlendFunction.ADD} />
-                  </EffectComposer>
-                  <Preload all />
-                </Canvas>
-              </div>
-
-              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_30%_50%,_rgba(249,132,12,0.10),_transparent_55%)]" />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent to-[#060810]/80" />
-
-              <AnimatePresence mode="wait">
-                <motion.div key={activeIndex}
-                  initial={{ opacity: 0, y: 24, scale: 0.97 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -16, scale: 0.97 }}
-                  transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
-                  className="relative z-10 flex h-full flex-col justify-center p-8 sm:p-10"
-                >
-                  <div className="mb-6 flex justify-center lg:justify-start">
-                    <motion.img key={active.image} src={active.image} alt={active.title}
-                      initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                      className="h-40 w-auto object-contain sm:h-52"
-                      style={{ filter: "drop-shadow(0 0 80px rgba(249,132,12,0.70))" }} />
-                  </div>
-
-                  <span className="mb-2 text-xs font-bold uppercase tracking-widest text-orange">
-                    {String(activeIndex + 1).padStart(2, "0")} / {String(products.length).padStart(2, "0")}
-                  </span>
-                  <h3 className="text-3xl font-black text-white sm:text-4xl">{active.title}</h3>
-                  <p className="mt-1 font-mono text-sm text-orange/60">{active.subtitle}</p>
-                  <p className="mt-4 text-sm leading-relaxed text-secondary max-w-md">{active.description}</p>
-
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    {active.specs.map((s) => (
-                      <span key={s} className="rounded-lg border border-orange/20 bg-orange/10 px-3 py-1 text-xs font-bold text-orange">{s}</span>
-                    ))}
-                  </div>
-
-                  <Link href={`/product/${active.id}`}
-                    className="mt-6 inline-flex w-fit items-center gap-2 rounded-full bg-orange px-6 py-2.5 text-sm font-bold text-white shadow-orange hover:bg-orange-dark transition-all">
-                    Full product page →
-                  </Link>
-                </motion.div>
-              </AnimatePresence>
-
-              <motion.div
-                className="absolute bottom-0 left-0 h-0.5 bg-orange/60"
-                animate={{ width: `${((activeIndex + 1) / products.length) * 100}%` }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
-              />
+          {/* RIGHT: catalogue */}
+          <div className="flex flex-col gap-3">
+            <div className="mb-1 flex items-center justify-between">
+              <span className="hud-label">Catalogue</span>
+              <span className="mono text-[10px] tracking-widest text-secondary/40">
+                auto · 8s
+              </span>
             </div>
-
-            {/* Product grid */}
-            <div className="overflow-y-auto scrollbar-hide flex flex-col gap-3 pb-4 min-h-0">
-              {products.map((p, i) => (
-                <ProductCard key={p.title} {...p} index={i} isActive={i === activeIndex} onClick={() => setManualIndex(i)} />
-              ))}
-              <div className="mt-1 rounded-2xl border border-orange/15 bg-orange/5 p-5">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-orange">Lilaas technology</p>
-                <p className="mt-0.5 text-sm font-black text-white">AESS — Azimuth Electronic Shaft System</p>
-                <p className="mt-1.5 text-xs text-secondary">Proprietary CAN-bus manoeuvring system. Master/slave for all vessel types.</p>
-              </div>
+            {products.map((p, i) => (
+              <CatalogueItem
+                key={p.id}
+                product={p}
+                active={i === activeIndex}
+                onSelect={setActiveIndex}
+                index={i}
+              />
+            ))}
+            <div className="mt-3 rounded-xl border border-orange/15 bg-gradient-to-br from-orange/8 to-transparent p-5">
+              <p className="mono text-[10px] font-bold tracking-[0.3em] text-orange">
+                LILAAS TECHNOLOGY
+              </p>
+              <p className="mt-2 text-base font-black text-white">AESS</p>
+              <p className="mt-1 text-xs text-secondary">
+                Azimuth Electronic Shaft System — proprietary CAN-bus master/slave
+                for every vessel class. Full duplicate controls, zero extra I/O.
+              </p>
             </div>
           </div>
         </div>

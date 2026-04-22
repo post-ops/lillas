@@ -19,8 +19,9 @@ const Industries = () => {
         {industries.map((industry, i) => (
           <IndustryPanel key={industry.title} industry={industry} index={i} total={industries.length} progress={smooth} />
         ))}
-        <div className="pointer-events-none absolute left-8 top-8 z-50 sm:left-16">
-          <p className="text-xs font-bold uppercase tracking-[0.3em] text-orange/60">Industries</p>
+        <div className="pointer-events-none absolute left-8 top-24 z-50 flex items-center gap-3 sm:left-16">
+          <span className="h-px w-8 bg-orange/50" />
+          <p className="hud-label">Industries · 04 sectors</p>
         </div>
         <div className="absolute right-8 top-1/2 z-50 flex -translate-y-1/2 flex-col gap-2">
           {industries.map((_, i) => {
@@ -96,10 +97,10 @@ function CernBadge({ progress, total }) {
   const opacity = useTransform(progress, [lastStart + 0.1, lastStart + 0.2], [0, 1]);
   return (
     <motion.div style={{ opacity }} className="pointer-events-none absolute bottom-8 left-8 z-50 flex items-center gap-4 sm:left-16">
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-orange/20 bg-orange/10 text-lg">⚛️</div>
+      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-orange/25 bg-orange/10 text-xl shadow-orange">⚛️</div>
       <div>
-        <p className="text-xs font-bold text-white">Supplying <span className="gradient-text">CERN&apos;s Large Hadron Collider</span></p>
-        <p className="text-xs text-secondary">Where zero tolerance is the specification.</p>
+        <p className="text-sm font-bold text-white">Supplying <span className="gradient-text">CERN&apos;s Large Hadron Collider</span></p>
+        <p className="mono mt-0.5 text-[11px] tracking-widest text-secondary/70">WHERE ZERO TOLERANCE IS THE SPEC.</p>
       </div>
     </motion.div>
   );
