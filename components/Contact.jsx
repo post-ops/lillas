@@ -14,11 +14,29 @@ const Contact = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
+    // Build a mailto so the message always reaches Lilaas, even without a backend.
+    const subject = encodeURIComponent(
+      `Website enquiry — ${form.company || form.name || "new contact"}`
+    );
+    const body = encodeURIComponent(
+      [
+        `Name: ${form.name}`,
+        `Email: ${form.email}`,
+        form.company ? `Company: ${form.company}` : null,
+        "",
+        form.message,
+      ]
+        .filter(Boolean)
+        .join("\n")
+    );
+    const mailto = `mailto:${brand.email}?subject=${subject}&body=${body}`;
+    // Small delay so the spinner registers visually.
     setTimeout(() => {
+      window.location.href = mailto;
       setLoading(false);
       setSent(true);
       setForm({ name: "", email: "", company: "", message: "" });
-    }, 1500);
+    }, 600);
   };
 
   const inputClass =

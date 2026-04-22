@@ -1,5 +1,5 @@
 'use client';
-import { Suspense, useRef, useEffect, useMemo } from "react";
+import { Suspense, useRef, useEffect, useMemo, useState } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Torus, Float, Preload } from "@react-three/drei";
@@ -138,6 +138,36 @@ function CameraRig() {
   return null;
 }
 
+function CursorGlow() {
+  const [pos, setPos] = useState({ x: 50, y: 50, active: false });
+  useEffect(() => {
+    const onMove = (e) => {
+      setPos({
+        x: (e.clientX / window.innerWidth) * 100,
+        y: (e.clientY / window.innerHeight) * 100,
+        active: true,
+      });
+    };
+    const onLeave = () => setPos((p) => ({ ...p, active: false }));
+    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointerleave", onLeave);
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerleave", onLeave);
+    };
+  }, []);
+  return (
+    <div
+      className="pointer-events-none absolute inset-0 z-[5] transition-opacity duration-500"
+      style={{
+        opacity: pos.active ? 1 : 0,
+        background: `radial-gradient(420px circle at ${pos.x}% ${pos.y}%, rgba(249,132,12,0.12), transparent 60%)`,
+      }}
+      aria-hidden
+    />
+  );
+}
+
 const Hero = () => {
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end start"] });
@@ -184,6 +214,7 @@ const Hero = () => {
         </div>
 
         <AnimatedGrid opacity={0.55} />
+        <CursorGlow />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_65%_at_50%_-5%,_rgba(249,132,12,0.14),_transparent)]" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_50%_115%,_rgba(249,132,12,0.08),_transparent)]" />
         <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-primary to-transparent z-20" />
@@ -245,7 +276,7 @@ const Hero = () => {
         <motion.div style={{ opacity: act2Opacity }} className="pointer-events-none absolute inset-0 z-10">
           <div className="absolute top-[22%] left-[8%] sm:left-[12%] rounded-full border border-orange/35 bg-primary/80 px-3.5 py-1.5 text-[11px] font-bold text-orange backdrop-blur-md shadow-orange">CAN-bus · AESS</div>
           <div className="absolute top-[28%] right-[8%] sm:right-[12%] rounded-full border border-orange/35 bg-primary/80 px-3.5 py-1.5 text-[11px] font-bold text-orange backdrop-blur-md shadow-orange">IP66 · DNV</div>
-          <div className="absolute top-[45%] right-[6%] sm:right-[10%] rounded-full border border-orange/25 bg-primary/70 px-3 py-1 text-[10px] font-semibold text-orange/80 backdrop-blur-md">−40 °C to +70 °C</div>
+          <div className="absolute top-[45%] right-[6%] sm:right-[10%] rounded-full border border-orange/25 bg-primary/70 px-3 py-1 text-[10px] font-semibold text-orange/80 backdrop-blur-md">−25 °C to +70 °C</div>
         </motion.div>
 
         {/* ACT 3 */}

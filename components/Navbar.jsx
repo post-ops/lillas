@@ -10,8 +10,26 @@ const Navbar = () => {
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", onScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const sections = navLinks
+      .map(({ id }) => document.getElementById(id))
+      .filter(Boolean);
+    if (!sections.length) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) setActive(visible.target.id);
+      },
+      { rootMargin: "-45% 0px -45% 0px", threshold: [0, 0.1, 0.5, 1] }
+    );
+    sections.forEach((s) => io.observe(s));
+    return () => io.disconnect();
   }, []);
 
   return (

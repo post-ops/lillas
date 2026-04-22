@@ -1,4 +1,5 @@
 'use client';
+import Link from "next/link";
 import { brand, navLinks, images } from "@/lib/config";
 
 const Footer = () => (
@@ -56,19 +57,27 @@ const Footer = () => (
               {brand.email}
             </a>
           </div>
-          <a
+          <Link
             href="/#contact"
             className="mt-5 inline-flex items-center gap-2 rounded-full border border-orange/25 bg-orange/8 px-4 py-2 text-xs font-bold text-orange transition-all hover:bg-orange/15 hover:border-orange/40"
           >
             Get in touch →
-          </a>
+          </Link>
         </div>
       </div>
 
       <div className="mt-10 h-px w-full bg-gradient-to-r from-transparent via-white/6 to-transparent" />
-      <p className="mt-6 text-center text-[11px] text-secondary/25">
-        © {new Date().getFullYear()} {brand.name} AS · Org.nr. 997 346 912 · Founded {brand.founded}
-      </p>
+      <div className="mt-6 flex flex-col items-center gap-2 sm:flex-row sm:justify-between">
+        <p className="text-[11px] text-secondary/30">
+          © {new Date().getFullYear()} {brand.name} AS · Founded {brand.founded}
+        </p>
+        <p className="flex items-center gap-2 text-[11px] text-secondary/40">
+          <span>Engineered &amp; manufactured in</span>
+          <span className="inline-flex items-center gap-1.5 rounded-md border border-white/8 bg-white/3 px-2 py-0.5 font-semibold text-white/70">
+            <span aria-hidden>🇳🇴</span> Horten, Norway
+          </span>
+        </p>
+      </div>
     </div>
   </footer>
 );

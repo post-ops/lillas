@@ -103,10 +103,10 @@ const Globe = () => {
   const globeY = useTransform(smooth, [0, 1], ["40px", "-60px"]);
 
   const stats = [
-    { stat: "~50%", label: "Export share",     sub: "Direct to global customers" },
-    { stat: "75%",  label: "Maritime revenue",  sub: "Our core business" },
-    { stat: "60+",  label: "Years experience",  sub: "Founded Horten, 1961" },
-    { stat: "∞",    label: "Precision demands", sub: "Zero compromise" },
+    { stat: "~50%", label: "Export share",    sub: "Direct to global customers" },
+    { stat: "75%",  label: "Maritime revenue", sub: "Our core business" },
+    { stat: "60+",  label: "Years experience", sub: "Founded Horten, 1961" },
+    { stat: "IP66", label: "Rated enclosures", sub: "Every product, certified" },
   ];
 
   return (

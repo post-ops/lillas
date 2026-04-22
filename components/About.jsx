@@ -1,5 +1,5 @@
 'use client';
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { motion, useScroll, useTransform, useSpring, useMotionValue, useInView } from "framer-motion";
 import { brand, stats, features, images } from "@/lib/config";
 import Tilt3D from "@/components/ui/Tilt3D";
@@ -7,12 +7,14 @@ import { StaggerContainer, StaggerItem } from "@/components/ui/ScrollReveal";
 
 function AnimatedNumber({ value }) {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true });
+  const isInView = useInView(ref, { once: true, amount: 0.4 });
   const isNumber = /^\d+$/.test(value);
   const num = useMotionValue(0);
-  const spring = useSpring(num, { duration: 1800 });
+  const spring = useSpring(num, { stiffness: 60, damping: 18, mass: 1 });
   const display = useTransform(spring, (v) => Math.round(v).toString());
-  if (isInView && isNumber) num.set(parseInt(value));
+  useEffect(() => {
+    if (isInView && isNumber) num.set(parseInt(value, 10));
+  }, [isInView, isNumber, value, num]);
   return <span ref={ref}>{isNumber ? <motion.span>{display}</motion.span> : value}</span>;
 }
 

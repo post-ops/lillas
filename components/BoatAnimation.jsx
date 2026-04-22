@@ -1,5 +1,5 @@
 'use client';
-import React, { Suspense, useRef, useMemo, useEffect } from "react";
+import React, { Suspense, useRef, useMemo, useEffect, useState } from "react";
 import { Canvas, useFrame, extend, useThree, useLoader } from "@react-three/fiber";
 import { Stars, Preload, useGLTF } from "@react-three/drei";
 import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
@@ -339,20 +339,20 @@ function WakeTrail() {
 }
 
 function Scene() {
-  const sunRef = useRef(new THREE.Vector3());
-  const handleSun = (sun) => { sunRef.current.copy(sun); };
+  const [sunDir, setSunDir] = useState(null);
+  const handleSun = (sun) => setSunDir(sun.clone());
 
   return (
     <>
       <fogExp2 color="#060d1a" density={0.022} />
       <color attach="background" args={["#060d1a"]} />
       <ambientLight intensity={0.18} color="#2a4a7a" />
-      <directionalLight position={[-20, 5, -10]} intensity={3.0} color="#ffcc88" castShadow />
+      <directionalLight position={[-20, 5, -10]} intensity={3.0} color="#ffcc88" />
       <directionalLight position={[10, 15, 8]}  intensity={0.5} color="#8ab0d8" />
       <Stars radius={300} depth={60} count={4000} factor={3} saturation={0.1} fade speed={0.3} />
       <SkyDome onSun={handleSun} />
       <Suspense fallback={null}>
-        <OceanWater sunDir={sunRef.current} />
+        {sunDir && <OceanWater sunDir={sunDir} />}
         <GLBOrFallback />
         <WakeTrail />
       </Suspense>
@@ -367,25 +367,52 @@ function Scene() {
 
 export default function BoatAnimation() {
   return (
-    <div className="relative w-full overflow-hidden" style={{ height: 420, background: "#080e1a" }}>
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-16 bg-gradient-to-b from-[#08090f] to-transparent" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-16 bg-gradient-to-t from-[#08090f] to-transparent" />
-      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-gradient-to-r from-[#080e1a] to-transparent" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-gradient-to-l from-[#080e1a] to-transparent" />
-
-      <Canvas
-        dpr={[1, 2]}
-        camera={{ position: [0, 4.5, 20], fov: 52, near: 0.1, far: 2000 }}
-        gl={{ antialias: true, alpha: false, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 0.9 }}
-      >
-        <Scene />
-      </Canvas>
-
-      <div className="pointer-events-none absolute bottom-4 left-1/2 z-20 -translate-x-1/2 flex items-center gap-2.5">
-        <span className="h-px w-10 bg-orange/25" />
-        <span className="text-[9px] font-bold uppercase tracking-[0.28em] text-orange/40">Lilaas at sea</span>
-        <span className="h-px w-10 bg-orange/25" />
+    <section className="relative overflow-hidden bg-[#07090f] pt-20 pb-14">
+      <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 h-px w-3/4 bg-gradient-to-r from-transparent via-orange/20 to-transparent" />
+      <div className="mx-auto mb-10 max-w-4xl px-6 text-center sm:px-16">
+        <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-orange">At sea, at scale</p>
+        <h2 className="text-3xl font-black leading-tight text-white sm:text-5xl">
+          On the bridge of{" "}
+          <span className="gradient-text">thousands of vessels</span>
+        </h2>
+        <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-secondary">
+          From harbour tugs to DP-class offshore ships — Lilaas control levers
+          and joysticks are running bridges all over the world, every minute of every day.
+        </p>
       </div>
-    </div>
+
+      <div className="relative w-full overflow-hidden" style={{ height: 460, background: "#080e1a" }}>
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-20 bg-gradient-to-b from-[#07090f] to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-20 bg-gradient-to-t from-[#07090f] to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-[#080e1a] to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-[#080e1a] to-transparent" />
+
+        <Canvas
+          dpr={[1, 2]}
+          camera={{ position: [0, 4.5, 20], fov: 52, near: 0.1, far: 2000 }}
+          gl={{ antialias: true, alpha: false, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 0.9 }}
+        >
+          <Scene />
+        </Canvas>
+
+        <div className="pointer-events-none absolute bottom-5 left-1/2 z-20 -translate-x-1/2 flex items-center gap-2.5 rounded-full border border-orange/20 bg-black/50 px-4 py-1.5 backdrop-blur-md">
+          <span className="h-1.5 w-1.5 rounded-full bg-orange animate-pulse" />
+          <span className="text-[10px] font-bold uppercase tracking-[0.28em] text-orange/80">Live simulation · Lilaas-controlled vessel</span>
+        </div>
+      </div>
+
+      <div className="mx-auto mt-10 grid max-w-4xl gap-4 px-6 sm:grid-cols-3 sm:px-16">
+        {[
+          { k: "Ferries & ro-ro",       v: "Daily service" },
+          { k: "Offshore supply",       v: "DP-class operations" },
+          { k: "Cruise & cargo",        v: "Blue-water duty" },
+        ].map(({ k, v }) => (
+          <div key={k} className="rounded-xl border border-white/5 bg-surface/30 px-4 py-3 text-center backdrop-blur-sm">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-orange/70">{k}</p>
+            <p className="mt-1 text-sm font-semibold text-white">{v}</p>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }

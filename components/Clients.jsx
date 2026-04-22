@@ -1,7 +1,7 @@
 'use client';
 import { useRef } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
-import { clients } from "@/lib/config";
+import { clients, partnerMarquee } from "@/lib/config";
 import Tilt3D from "@/components/ui/Tilt3D";
 
 function Marquee({ items, reverse = false }) {
@@ -90,8 +90,8 @@ const Clients = () => {
       </div>
 
       <div className="mt-16 space-y-1 opacity-60">
-        <Marquee items={clients} />
-        <Marquee items={[...clients].reverse()} reverse />
+        <Marquee items={partnerMarquee} />
+        <Marquee items={[...partnerMarquee].reverse()} reverse />
       </div>
 
       <p className="mt-10 px-6 text-center text-sm text-secondary/40">
