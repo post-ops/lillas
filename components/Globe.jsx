@@ -1,5 +1,5 @@
 'use client';
-import { Suspense, useRef } from "react";
+import { Suspense, useRef, useMemo } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Sphere, MeshDistortMaterial, Preload, Points, PointMaterial } from "@react-three/drei";
@@ -57,7 +57,7 @@ function Satellites({ scrollProgress }) {
 
 function RingParticles() {
   const ref    = useRef();
-  const sphere = random.inSphere(new Float32Array(2400), { radius: 3.6 });
+  const sphere = useMemo(() => random.inSphere(new Float32Array(2400), { radius: 3.6 }), []);
   useFrame((_, d) => {
     ref.current.rotation.y -= d / 18;
     ref.current.rotation.x -= d / 38;

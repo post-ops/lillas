@@ -1,12 +1,12 @@
 'use client';
-import { Suspense, useRef } from "react";
+import { Suspense, useRef, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Points, PointMaterial, Preload } from "@react-three/drei";
 import * as random from "maath/random/dist/maath-random.esm";
 
 function Stars() {
   const ref = useRef();
-  const sphere = random.inSphere(new Float32Array(4000), { radius: 1.2 });
+  const sphere = useMemo(() => random.inSphere(new Float32Array(4000), { radius: 1.2 }), []);
   useFrame((_, delta) => {
     ref.current.rotation.x -= delta / 14;
     ref.current.rotation.y -= delta / 18;
