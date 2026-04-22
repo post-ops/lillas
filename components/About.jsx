@@ -63,22 +63,26 @@ const About = () => {
   const blobY = useTransform(smooth, [0, 1], ["-5%",  "5%"]);
 
   return (
-    <section id="about" ref={sectionRef} className="relative overflow-hidden bg-primary py-28">
+    <section id="about" ref={sectionRef} className="relative overflow-hidden bg-[#0a0c14] py-28">
+      {/* top fade from hero */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-primary to-transparent" />
+      {/* section divider line */}
+      <div className="section-divider absolute inset-x-0 top-0" />
+
       <div className="dot-grid pointer-events-none absolute inset-0 opacity-15" />
       <motion.div style={{ x: blobX, y: blobY }} className="pointer-events-none absolute -right-32 top-0 h-[600px] w-[600px] rounded-full bg-orange/6 blur-[180px]" />
       <div className="pointer-events-none absolute -left-32 bottom-0 h-[400px] w-[400px] rounded-full bg-orange/4 blur-[140px]" />
 
-      <div className="relative mx-auto max-w-7xl px-6 sm:px-16">
+      <div className="relative mx-auto max-w-7xl px-8 sm:px-16 lg:px-24">
         <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-orange">
           About Lilaas
         </motion.p>
         <motion.h2
-          initial={{ opacity: 0, y: 36, rotateX: 10 }}
-          whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+          initial={{ opacity: 0, y: 36 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-          style={{ transformPerspective: 1000 }}
-          className="mb-16 max-w-3xl text-4xl font-black text-white sm:text-6xl leading-none"
+          className="mb-16 max-w-3xl text-4xl font-black text-white sm:text-5xl leading-tight"
         >
           World-class precision —{" "}
           <span className="gradient-text">from Horten to the globe</span>
@@ -187,6 +191,8 @@ const About = () => {
           <HorizontalTimeline />
         </div>
       </div>
+      {/* bottom divider */}
+      <div className="section-divider absolute inset-x-0 bottom-0" />
     </section>
   );
 };
