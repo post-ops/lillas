@@ -1,52 +1,31 @@
 import Link from "next/link";
-import Image from "next/image";
-import { brand, images, products } from "@/lib/config";
-
-const CERTS = ["DNV", "CRS", "IP66", "CE", "CAN J1939"];
+import { brand, products } from "@/lib/config";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-white/5 bg-[#08090f] py-16">
-      <div className="mx-auto max-w-7xl px-6 lg:px-10">
-        <div className="grid gap-10 lg:grid-cols-12">
-          <div className="lg:col-span-5">
-            <Link href="/" className="inline-flex items-center gap-3">
-              <Image
-                src={images.logo}
-                alt="Lilaas"
-                width={120}
-                height={28}
-                className="h-7 w-auto brightness-110"
-                unoptimized
-              />
-              <span className="text-base font-semibold text-white">Lilaas</span>
-            </Link>
-            <p className="mt-5 max-w-md text-sm leading-relaxed text-white/55">
-              Maritime control levers, joysticks, and bridge systems. Designed
-              and manufactured in Horten, Norway since {brand.founded}.
+    <footer className="relative bg-ink text-paper">
+      <div className="mx-auto max-w-[1400px] px-6 py-20 lg:px-12 lg:py-28">
+        <div className="grid gap-16 lg:grid-cols-12">
+          <div className="lg:col-span-6">
+            <p className="font-display text-5xl font-normal leading-none tracking-[-0.02em] text-paper lg:text-[88px]">
+              Lilaas
             </p>
-            <div className="mt-6 flex flex-wrap gap-1.5">
-              {CERTS.map((c) => (
-                <span
-                  key={c}
-                  className="rounded border border-white/10 bg-white/5 px-2 py-0.5 text-[11px] font-medium text-white/60"
-                >
-                  {c}
-                </span>
-              ))}
-            </div>
+            <p className="mt-6 max-w-md text-[15px] leading-[1.7] text-paper/65">
+              Maritime control levers, joysticks, and bridge systems.
+              Designed and manufactured in Horten, Norway since {brand.founded}.
+            </p>
           </div>
 
-          <div className="lg:col-span-3">
-            <p className="text-xs font-semibold uppercase tracking-wider text-white/45">
+          <div className="lg:col-span-2">
+            <p className="text-[11px] uppercase tracking-[0.18em] text-paper/50">
               Products
             </p>
-            <ul className="mt-4 space-y-2">
+            <ul className="mt-5 space-y-2.5">
               {products.map((p) => (
                 <li key={p.id}>
                   <Link
                     href={`/product/${p.id}`}
-                    className="text-sm text-white/70 transition-colors hover:text-orange"
+                    className="text-sm text-paper/75 transition-colors hover:text-paper"
                   >
                     {p.title.split(" — ")[0]}
                   </Link>
@@ -56,27 +35,27 @@ export default function Footer() {
           </div>
 
           <div className="lg:col-span-2">
-            <p className="text-xs font-semibold uppercase tracking-wider text-white/45">
+            <p className="text-[11px] uppercase tracking-[0.18em] text-paper/50">
               Company
             </p>
-            <ul className="mt-4 space-y-2">
-              <li><a href="#about" className="text-sm text-white/70 transition-colors hover:text-orange">About</a></li>
-              <li><a href="#industries" className="text-sm text-white/70 transition-colors hover:text-orange">Industries</a></li>
-              <li><a href="#clients" className="text-sm text-white/70 transition-colors hover:text-orange">Clients</a></li>
-              <li><a href="#contact" className="text-sm text-white/70 transition-colors hover:text-orange">Contact</a></li>
+            <ul className="mt-5 space-y-2.5">
+              <li><a href="#about" className="text-sm text-paper/75 transition-colors hover:text-paper">About</a></li>
+              <li><a href="#industries" className="text-sm text-paper/75 transition-colors hover:text-paper">Industries</a></li>
+              <li><a href="#clients" className="text-sm text-paper/75 transition-colors hover:text-paper">Clients</a></li>
+              <li><a href="#contact" className="text-sm text-paper/75 transition-colors hover:text-paper">Contact</a></li>
             </ul>
           </div>
 
           <div className="lg:col-span-2">
-            <p className="text-xs font-semibold uppercase tracking-wider text-white/45">
+            <p className="text-[11px] uppercase tracking-[0.18em] text-paper/50">
               Contact
             </p>
-            <address className="mt-4 space-y-2 not-italic">
-              <p className="text-sm text-white/70">{brand.location}</p>
+            <address className="mt-5 space-y-2.5 not-italic">
+              <p className="text-sm text-paper/75">{brand.location}</p>
               <p>
                 <a
                   href={`tel:${brand.phone.replace(/\s/g, "")}`}
-                  className="text-sm text-white/70 transition-colors hover:text-orange"
+                  className="text-sm text-paper/75 transition-colors hover:text-paper"
                 >
                   {brand.phone}
                 </a>
@@ -84,7 +63,7 @@ export default function Footer() {
               <p>
                 <a
                   href={`mailto:${brand.email}`}
-                  className="text-sm text-white/70 transition-colors hover:text-orange"
+                  className="text-sm text-paper/75 transition-colors hover:text-paper"
                 >
                   {brand.email}
                 </a>
@@ -93,11 +72,13 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-white/5 pt-6 sm:flex-row sm:items-center">
-          <p className="text-xs text-white/40">
+        <div className="mt-16 flex flex-col items-start justify-between gap-3 border-t border-paper/10 pt-6 sm:flex-row sm:items-center">
+          <p className="text-xs text-paper/45">
             © {new Date().getFullYear()} Lilaas AS · Est. {brand.founded} · Made in Horten, Norway
           </p>
-          <p className="text-xs text-white/40">All rights reserved.</p>
+          <p className="text-xs text-paper/45">
+            DNV · CRS · IP66 · CE · CAN J1939
+          </p>
         </div>
       </div>
     </footer>

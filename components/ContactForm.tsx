@@ -32,54 +32,55 @@ export default function ContactForm() {
   }
 
   const field =
-    "w-full rounded-md border border-white/10 bg-[#0b0e14] px-4 py-3 text-sm text-white placeholder-white/35 outline-none transition-colors focus:border-orange/60 focus:bg-[#0f131c]";
+    "w-full border-b border-ink/25 bg-transparent px-0 py-3 text-[15px] text-ink placeholder-ink/35 outline-none transition-colors focus:border-ink";
+  const labelCls = "mb-2 block text-[11px] uppercase tracking-[0.18em] text-ink/55";
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid gap-4 sm:grid-cols-2">
+    <form onSubmit={handleSubmit} className="space-y-8">
+      <div className="grid gap-8 sm:grid-cols-2">
         <div>
-          <label htmlFor="name" className="mb-1.5 block text-xs font-medium text-white/60">
+          <label htmlFor="name" className={labelCls}>
             Name
           </label>
           <input id="name" name="name" type="text" required className={field} placeholder="Your name" />
         </div>
         <div>
-          <label htmlFor="company" className="mb-1.5 block text-xs font-medium text-white/60">
+          <label htmlFor="company" className={labelCls}>
             Company
           </label>
           <input id="company" name="company" type="text" className={field} placeholder="Your company" />
         </div>
       </div>
       <div>
-        <label htmlFor="email" className="mb-1.5 block text-xs font-medium text-white/60">
+        <label htmlFor="email" className={labelCls}>
           Email
         </label>
         <input id="email" name="email" type="email" required className={field} placeholder="you@company.com" />
       </div>
       <div>
-        <label htmlFor="message" className="mb-1.5 block text-xs font-medium text-white/60">
+        <label htmlFor="message" className={labelCls}>
           Message
         </label>
         <textarea
           id="message"
           name="message"
           required
-          rows={5}
-          className={field}
+          rows={4}
+          className={field + " resize-none"}
           placeholder="How can we help?"
         />
       </div>
       <button
         type="submit"
-        className="inline-flex items-center gap-2 rounded-md bg-orange px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-orange-dark"
+        className="inline-flex items-center gap-2 border-b border-ink pb-0.5 text-base font-medium text-ink transition-opacity hover:opacity-70"
       >
         Send inquiry
         <span aria-hidden="true">→</span>
       </button>
       {sent && (
-        <p className="text-sm text-white/60">
+        <p className="text-sm text-mute">
           Your email client should open. If nothing happens, write to{" "}
-          <a href={`mailto:${brand.email}`} className="text-orange hover:underline">
+          <a href={`mailto:${brand.email}`} className="underline">
             {brand.email}
           </a>
           .

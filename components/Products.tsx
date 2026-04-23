@@ -3,26 +3,28 @@ import ProductCard from "./ProductCard";
 
 export default function Products() {
   return (
-    <section id="products" className="border-t border-white/5 bg-[#0b0e14] py-24">
-      <div className="mx-auto max-w-7xl px-6 lg:px-10">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <div className="max-w-2xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-orange">
-              Products
+    <section id="products" className="relative">
+      <div className="mx-auto max-w-[1400px] px-6 py-28 lg:px-12 lg:py-40">
+        <div className="flex flex-col gap-6 border-b border-line pb-10 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-ink/50">
+              The range
             </p>
-            <h2 className="mt-3 text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">
-              Control levers and bridge systems.
+            <h2 className="font-display mt-6 max-w-3xl text-4xl font-normal leading-[1.02] tracking-[-0.02em] text-ink sm:text-5xl lg:text-[72px]">
+              Control levers,<br />
+              joysticks,<br />
+              <em className="italic">bridge systems.</em>
             </h2>
-            <p className="mt-5 text-lg leading-relaxed text-white/70">
-              Designed and manufactured in-house — from the anodised aluminium housing
-              to the CAN bus electronics. DNV, CRS, IP66 certified.
-            </p>
           </div>
+          <p className="max-w-sm text-[15px] leading-[1.7] text-ink-soft">
+            Six core products. DNV, CRS, IP66 certified. Designed and
+            manufactured in-house at Kongeveien 75.
+          </p>
         </div>
 
-        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-16 grid gap-x-8 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
           {products.map((p, i) => (
-            <ProductCard key={p.id} product={p} priority={i < 3} />
+            <ProductCard key={p.id} product={p} priority={i < 3} index={i} />
           ))}
         </div>
       </div>

@@ -1,93 +1,84 @@
+import Image from "next/image";
+import { images } from "@/lib/config";
+
 const INDUSTRIES = [
   {
+    n: "01",
     title: "Maritime & Offshore",
     share: "75% of revenue",
-    description:
-      "Control levers and joysticks on fishing boats, ferries, supply vessels, tankers, and cruise ships.",
-    cert: "DNV · CRS",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-        <path d="M12 3v15" strokeLinecap="round" />
-        <circle cx="12" cy="5" r="1.5" />
-        <path d="M5 10l7 2 7-2" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M4 15c2 3 5 5 8 5s6-2 8-5" strokeLinecap="round" />
-      </svg>
-    ),
+    copy:
+      "Control levers and joysticks on fishing boats, ferries, offshore supply vessels, tankers, and cruise ships — through the world's leading shipyards and system integrators.",
+    image: images.boatAtSea,
   },
   {
+    n: "02",
     title: "Defence",
     share: "Military-certified",
-    description:
-      "Precision components with the strictest reliability and documentation requirements.",
-    cert: "ISO 9001",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-        <path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z" strokeLinejoin="round" />
-      </svg>
-    ),
+    copy:
+      "Precision components with the strictest reliability and documentation requirements. Delivered to defence primes in Europe and beyond.",
+    image: images.factory,
   },
   {
+    n: "03",
     title: "Medical",
     share: "Traceable quality",
-    description:
-      "Precision components for medical equipment with full traceability and quality documentation.",
-    cert: "ISO 13485",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-        <path d="M12 6v12M6 12h12" strokeLinecap="round" />
-        <rect x="3" y="3" width="18" height="18" rx="2" />
-      </svg>
-    ),
+    copy:
+      "Precision mechanics for medical equipment with full traceability and ISO-13485 quality documentation.",
+    image: images.hospitals,
   },
   {
+    n: "04",
     title: "Science & Research",
     share: "CERN-verified",
-    description:
-      "Precision components for space and scientific research — including CERN's Large Hadron Collider.",
-    cert: "CERN",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-        <circle cx="12" cy="12" r="2" />
-        <ellipse cx="12" cy="12" rx="10" ry="4" />
-        <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)" />
-        <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)" />
-      </svg>
-    ),
+    copy:
+      "Precision components for science — including the Large Hadron Collider at CERN, where Lilaas parts have been in operation for over a decade.",
+    image: images.precision,
   },
 ];
 
 export default function Industries() {
   return (
-    <section id="industries" className="border-t border-white/5 bg-[#0b0e14] py-24">
-      <div className="mx-auto max-w-7xl px-6 lg:px-10">
-        <div className="max-w-2xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-orange">
-            Industries
-          </p>
-          <h2 className="mt-3 text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">
-            Four industries. One engineering team.
-          </h2>
-        </div>
+    <section id="industries" className="relative bg-paper">
+      <div className="mx-auto max-w-[1400px] px-6 py-28 lg:px-12 lg:py-40">
+        <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-ink/50">
+          Industries
+        </p>
+        <h2 className="font-display mt-6 max-w-4xl text-4xl font-normal leading-[1.02] tracking-[-0.02em] text-ink sm:text-5xl lg:text-[72px]">
+          Four industries.<br />
+          <em className="italic">One engineering team.</em>
+        </h2>
 
-        <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {INDUSTRIES.map((i) => (
-            <div
-              key={i.title}
-              className="flex flex-col gap-4 rounded-lg border border-white/5 bg-[#13161f] p-6 transition-colors hover:border-white/15"
-            >
-              <div className="h-10 w-10 text-orange">{i.icon}</div>
-              <div>
-                <h3 className="text-lg font-semibold text-white">{i.title}</h3>
-                <p className="mt-0.5 text-xs font-medium uppercase tracking-wider text-white/45">
-                  {i.share}
+        <ul className="mt-20 divide-y divide-line border-y border-line">
+          {INDUSTRIES.map((it) => (
+            <li key={it.title}>
+              <div className="group grid items-center gap-8 py-10 lg:grid-cols-12 lg:gap-12 lg:py-14">
+                <span className="font-display col-span-1 text-sm text-ink/45 lg:col-span-1">
+                  ({it.n})
+                </span>
+                <h3 className="font-display col-span-11 text-3xl font-normal leading-tight text-ink sm:text-4xl lg:col-span-4 lg:text-[44px]">
+                  {it.title}
+                </h3>
+                <p className="col-span-11 text-[15px] leading-[1.7] text-ink-soft lg:col-span-5 lg:col-start-6">
+                  {it.copy}
                 </p>
+                <span className="col-span-11 text-xs uppercase tracking-[0.18em] text-ink/55 lg:col-span-2 lg:text-right">
+                  {it.share}
+                </span>
               </div>
-              <p className="text-sm leading-relaxed text-white/70">{i.description}</p>
-              <span className="mt-auto inline-block rounded border border-white/10 bg-white/5 px-2 py-0.5 text-[11px] font-medium text-white/65">
-                {i.cert}
-              </span>
-            </div>
+            </li>
           ))}
+        </ul>
+
+        <div className="mt-20 overflow-hidden">
+          <Image
+            src={images.boatAtSea}
+            alt="Maritime operations"
+            width={1600}
+            height={600}
+            sizes="100vw"
+            className="h-auto w-full"
+            unoptimized
+          />
         </div>
       </div>
     </section>

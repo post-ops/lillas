@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Fraunces } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
@@ -9,9 +9,16 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-const title = "Lilaas — Control at Sea. Since 1961.";
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-fraunces",
+  axes: ["opsz", "SOFT"],
+});
+
+const title = "Lilaas — Maritime control since 1961.";
 const description =
-  "World-leading manufacturer of maritime control levers, joysticks and bridge systems. Engineered and produced in Horten, Norway since 1961. Trusted by Kongsberg Maritime, Wärtsilä and CERN.";
+  "Lilaas designs and manufactures maritime control levers, joysticks, and bridge systems in Horten, Norway. On thousands of vessels worldwide — through Kongsberg Maritime, Wärtsilä, and the world's leading integrators.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://lilaas.no"),
@@ -42,8 +49,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={inter.variable}>
-      <body className="min-h-screen bg-primary antialiased">
+    <html lang="en" className={`${inter.variable} ${fraunces.variable}`}>
+      <body className="min-h-screen bg-paper text-ink antialiased">
         {children}
         <Analytics />
       </body>

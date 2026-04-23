@@ -1,78 +1,96 @@
 import Image from "next/image";
-import { brand, images, stats } from "@/lib/config";
+import { brand, images } from "@/lib/config";
 
 export default function About() {
   return (
-    <section id="about" className="border-t border-white/5 bg-[#0b0e14] py-24">
-      <div className="mx-auto max-w-7xl px-6 lg:px-10">
-        <div className="max-w-3xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-orange">
-            About Lilaas
-          </p>
-          <h2 className="mt-3 text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">
-            Sixty years of maritime control engineering, in Horten.
-          </h2>
-        </div>
+    <section id="about" className="relative">
+      <div className="mx-auto max-w-[1400px] px-6 py-28 lg:px-12 lg:py-40">
+        <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-ink/50">
+          About
+        </p>
 
-        <div className="mt-14 grid gap-12 lg:grid-cols-5">
-          <div className="lg:col-span-3">
-            <div className="space-y-5 text-[17px] leading-relaxed text-white/75">
+        <h2 className="font-display mt-8 max-w-5xl text-4xl font-normal leading-[1.02] tracking-[-0.02em] text-ink sm:text-5xl lg:text-[80px]">
+          Sixty-five years of<br />
+          <em className="italic">maritime control engineering</em>,<br />
+          in one workshop in Horten.
+        </h2>
+
+        <div className="mt-20 grid gap-16 lg:grid-cols-12">
+          <div className="lg:col-span-6 lg:col-start-1">
+            <div className="space-y-6 text-[17px] leading-[1.7] text-ink-soft">
               <p>
-                Lilaas was founded in {brand.founded} by Jan Lilaas in Horten, Norway.
-                Today the company employs {brand.employees} people across mechanics,
-                electronics, and software — all disciplines under one roof. Roughly{" "}
-                {brand.exportShare}% of production is exported, most of it through
-                the world's leading system integrators and shipyards.
+                Lilaas was founded in {brand.founded} by Jan Lilaas. Today we
+                are {brand.employees} people — mechanics, electronics engineers,
+                and software developers — working under one roof on
+                Kongeveien 75 in Horten, forty kilometres south of Oslo.
               </p>
               <p>
-                The business is split across {brand.revenueShare.maritime}% maritime
-                — control levers, joysticks, and bridge consoles — and{" "}
-                {brand.revenueShare.precision}% precision mechanics for defence,
-                medical, and scientific equipment. Our work is on vessels in every
-                major flag state, and on instruments at CERN.
+                About {brand.exportShare}% of what we make leaves the country.
+                Most of it is installed on bridges built by the world's leading
+                shipyards and system integrators. The remaining work is
+                precision mechanics for defence, medicine, and scientific
+                research — including CERN's Large Hadron Collider.
+              </p>
+              <p>
+                We design, engineer, and produce everything in-house. It is
+                slower than outsourcing. It is how we solve the problems other
+                suppliers cannot.
               </p>
             </div>
 
-            <blockquote className="mt-10 border-l-2 border-orange pl-6">
-              <p className="text-lg italic leading-relaxed text-white/85">
+            <blockquote className="mt-12 max-w-xl border-l-2 border-brass pl-6">
+              <p className="font-display text-2xl italic leading-snug text-ink lg:text-3xl">
                 "{brand.ceoQuote}"
               </p>
-              <footer className="mt-4 text-sm text-white/55">
-                — {brand.ceo}, CEO
+              <footer className="mt-4 text-sm text-mute">
+                — {brand.ceo}, Managing Director
               </footer>
             </blockquote>
           </div>
 
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-6 lg:col-start-7">
             <Image
               src={images.factory}
-              alt="Lilaas facility in Horten, Norway"
-              width={800}
-              height={534}
-              sizes="(max-width: 1024px) 100vw, 40vw"
-              className="h-auto w-full rounded-lg border border-white/5"
+              alt="Lilaas production floor in Horten, Norway"
+              width={1024}
+              height={683}
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="h-auto w-full"
               unoptimized
             />
-            <p className="mt-3 text-xs text-white/50">
-              {brand.location}
+            <p className="mt-4 text-sm text-mute">
+              Production floor, Kongeveien 75, Horten.
             </p>
           </div>
         </div>
-
-        <dl className="mt-16 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-white/5 bg-white/5 lg:grid-cols-4">
-          {stats.map((s) => (
-            <div key={s.label} className="bg-[#0b0e14] p-6">
-              <dt className="text-xs font-medium uppercase tracking-wider text-white/50">
-                {s.label}
-              </dt>
-              <dd className="mt-2 text-3xl font-semibold text-white">
-                {s.value}
-                {s.label === "Exported globally" && "%"}
-              </dd>
-            </div>
-          ))}
-        </dl>
       </div>
+
+      <HeritageStrip />
     </section>
+  );
+}
+
+function HeritageStrip() {
+  const items: { n: string; l: string }[] = [
+    { n: "1961", l: "Founded in Horten" },
+    { n: "60", l: "Engineers and machinists" },
+    { n: "50%", l: "Exported worldwide" },
+    { n: "1000s", l: "Vessels under way" },
+  ];
+  return (
+    <div className="border-y border-line bg-paper-2">
+      <div className="mx-auto grid max-w-[1400px] grid-cols-2 divide-x divide-line px-6 lg:grid-cols-4 lg:px-12">
+        {items.map((it) => (
+          <div key={it.l} className="px-4 py-10 first:pl-0 last:pr-0 lg:py-16">
+            <div className="font-display text-5xl font-normal leading-none tracking-[-0.03em] text-ink lg:text-[88px]">
+              {it.n}
+            </div>
+            <div className="mt-4 text-xs uppercase tracking-[0.18em] text-ink/55">
+              {it.l}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }

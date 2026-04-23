@@ -1,15 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { brand, images, navLinks } from "@/lib/config";
+import { brand, navLinks } from "@/lib/config";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 16);
+    const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -17,71 +16,69 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 z-50 w-full transition-colors duration-200 ${
+      className={`fixed top-0 z-50 w-full transition-all duration-300 ${
         scrolled
-          ? "border-b border-white/5 bg-[#0b0e14]/90 backdrop-blur-md"
-          : "bg-transparent"
+          ? "border-b border-ink/10 bg-paper/90 backdrop-blur-md"
+          : "border-b border-transparent"
       }`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-10">
-        <Link href="/" className="flex items-center gap-3">
-          <Image
-            src={images.logo}
-            alt="Lilaas"
-            width={120}
-            height={28}
-            className="h-7 w-auto brightness-110"
-            unoptimized
-          />
-          <span className="text-base font-semibold text-white">Lilaas</span>
+      <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-5 lg:px-12">
+        <Link href="/" className="font-display text-2xl font-semibold tracking-tight text-paper">
+          Lilaas
         </Link>
 
-        <nav className="hidden items-center gap-8 lg:flex">
+        <nav className="hidden items-center gap-10 lg:flex">
           {navLinks.map((l) => (
             <a
               key={l.id}
               href={`#${l.id}`}
-              className="text-sm font-medium text-white/70 transition-colors hover:text-white"
+              className={`text-sm transition-colors ${
+                scrolled ? "text-ink/70 hover:text-ink" : "text-paper/80 hover:text-paper"
+              }`}
             >
               {l.label}
             </a>
           ))}
         </nav>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-6">
           <a
             href={`tel:${brand.phone.replace(/\s/g, "")}`}
-            className="hidden text-sm font-medium text-white/70 transition-colors hover:text-white md:inline"
+            className={`hidden text-sm transition-colors md:inline ${
+              scrolled ? "text-ink/70 hover:text-ink" : "text-paper/80 hover:text-paper"
+            }`}
           >
             {brand.phone}
           </a>
           <a
             href="#contact"
-            className="hidden rounded-md bg-orange px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-orange-dark md:inline-flex"
+            className={`hidden items-center gap-2 border-b pb-0.5 text-sm font-medium transition-opacity hover:opacity-70 md:inline-flex ${
+              scrolled ? "border-ink text-ink" : "border-paper text-paper"
+            }`}
           >
             Request a quote
+            <span aria-hidden="true">→</span>
           </a>
           <button
             onClick={() => setOpen(!open)}
             aria-label="Menu"
-            className="flex flex-col gap-1.5 rounded-md border border-white/10 bg-white/5 p-2.5 lg:hidden"
+            className="flex flex-col gap-1.5 lg:hidden"
           >
-            <span className="block h-0.5 w-5 bg-white" />
-            <span className="block h-0.5 w-5 bg-white" />
-            <span className="block h-0.5 w-5 bg-white" />
+            <span className={`block h-0.5 w-6 ${scrolled ? "bg-ink" : "bg-paper"}`} />
+            <span className={`block h-0.5 w-6 ${scrolled ? "bg-ink" : "bg-paper"}`} />
           </button>
         </div>
       </div>
 
       {open && (
-        <div className="border-t border-white/5 bg-[#0b0e14] px-6 pb-6 pt-2 lg:hidden">
+        <div className="border-t border-ink/10 bg-paper px-6 pb-8 pt-4 lg:hidden">
           <nav className="flex flex-col gap-1">
             {navLinks.map((l) => (
               <a
                 key={l.id}
                 href={`#${l.id}`}
                 onClick={() => setOpen(false)}
-                className="rounded-md px-3 py-3 text-sm font-medium text-white/80 transition-colors hover:bg-white/5 hover:text-white"
+                className="py-3 text-base text-ink/80 transition-colors hover:text-ink"
               >
                 {l.label}
               </a>
@@ -89,9 +86,9 @@ export default function Navbar() {
             <a
               href="#contact"
               onClick={() => setOpen(false)}
-              className="mt-2 rounded-md bg-orange px-3 py-3 text-center text-sm font-semibold text-white"
+              className="mt-4 inline-flex items-center gap-2 self-start border-b border-ink pb-0.5 text-base font-medium text-ink"
             >
-              Request a quote
+              Request a quote →
             </a>
           </nav>
         </div>

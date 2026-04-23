@@ -11,35 +11,29 @@ const CLIENTS = [
 
 export default function Clients() {
   return (
-    <section id="clients" className="border-t border-white/5 bg-[#0b0e14] py-24">
-      <div className="mx-auto max-w-7xl px-6 lg:px-10">
-        <div className="max-w-3xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-orange">
-            Clients
-          </p>
-          <h2 className="mt-3 text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">
-            Trusted by leading marine and science companies.
-          </h2>
-          <p className="mt-5 text-lg leading-relaxed text-white/70">
-            Lilaas' levers serve the world's top system integrators, shipyards,
-            and research institutions — on vessels in every major flag state,
-            and on instruments at CERN.
-          </p>
-        </div>
+    <section id="clients" className="relative bg-paper-2">
+      <div className="mx-auto max-w-[1400px] px-6 py-28 lg:px-12 lg:py-40">
+        <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-ink/50">
+          Clients & partners
+        </p>
+        <h2 className="font-display mt-6 max-w-4xl text-4xl font-normal leading-[1.02] tracking-[-0.02em] text-ink sm:text-5xl lg:text-[72px]">
+          Trusted by the<br />
+          <em className="italic">world's leading integrators.</em>
+        </h2>
 
-        <ul className="mt-14 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-white/5 bg-white/5 sm:grid-cols-4">
+        <ul className="mt-16 grid gap-x-12 gap-y-6 border-t border-line pt-10 sm:grid-cols-2 lg:grid-cols-4">
           {CLIENTS.map((name) => (
             <li
               key={name}
-              className="flex h-24 items-center justify-center bg-[#0b0e14] px-6 text-center text-base font-semibold text-white/75 transition-colors hover:text-white"
+              className="font-display border-b border-line py-6 text-2xl font-normal text-ink/90 lg:text-3xl"
             >
               {name}
             </li>
           ))}
         </ul>
 
-        <p className="mt-6 text-xs text-white/40">
-          Non-exhaustive list. References available on request.
+        <p className="mt-8 max-w-md text-sm leading-[1.6] text-ink-soft">
+          Non-exhaustive list. References and case studies available on request.
         </p>
       </div>
     </section>

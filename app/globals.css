@@ -1,14 +1,16 @@
 @import "tailwindcss";
 
 @theme {
-  --color-orange:        #f9840c;
-  --color-orange-dark:   #c86500;
-  --color-orange-light:  #ffb066;
-  --color-primary:       #0b0e14;
-  --color-surface:       #13161f;
-  --color-secondary:     #c9cdd4;
+  --color-paper:    #f1ece3;
+  --color-paper-2:  #e8e2d4;
+  --color-ink:      #14140e;
+  --color-ink-soft: #3a3630;
+  --color-mute:     #6b6459;
+  --color-brass:    #a8762a;
+  --color-line:     rgba(20, 20, 14, 0.12);
 
-  --font-sans: 'Inter', 'Segoe UI', sans-serif;
+  --font-sans:    'Inter', 'Söhne', 'Neue Haas Grotesk', 'Helvetica Neue', sans-serif;
+  --font-display: 'Fraunces', 'GT Sectra', 'Canela', Georgia, serif;
 }
 
 * {
@@ -22,14 +24,22 @@ html {
 }
 
 html, body {
-  background-color: #0b0e14;
-  color: #ffffff;
-  font-family: 'Inter', 'Segoe UI', sans-serif;
+  background-color: #f1ece3;
+  color: #14140e;
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 ::selection {
-  background: rgba(249, 132, 12, 0.25);
-  color: #fff;
+  background: #14140e;
+  color: #f1ece3;
+}
+
+.font-display {
+  font-family: var(--font-display);
+  font-feature-settings: "ss01", "ss02";
 }
