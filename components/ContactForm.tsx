@@ -32,12 +32,12 @@ export default function ContactForm() {
   }
 
   const field =
-    "w-full border-b border-ink/25 bg-transparent px-0 py-3 text-[15px] text-ink placeholder-ink/35 outline-none transition-colors focus:border-ink";
-  const labelCls = "mb-2 block text-[11px] uppercase tracking-[0.18em] text-ink/55";
+    "w-full rounded-xl border border-border bg-ink/60 px-4 py-3.5 text-sm text-paper placeholder-mute outline-none backdrop-blur-md transition-colors focus:border-orange/60 focus:bg-ink-2";
+  const labelCls = "mb-2 block text-[11px] font-semibold uppercase tracking-[0.22em] text-orange/80";
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
-      <div className="grid gap-8 sm:grid-cols-2">
+    <form onSubmit={handleSubmit} className="glass glow-border space-y-5 rounded-2xl p-7">
+      <div className="grid gap-5 sm:grid-cols-2">
         <div>
           <label htmlFor="name" className={labelCls}>
             Name
@@ -65,25 +65,24 @@ export default function ContactForm() {
           id="message"
           name="message"
           required
-          rows={4}
+          rows={5}
           className={field + " resize-none"}
           placeholder="How can we help?"
         />
       </div>
       <button
         type="submit"
-        className="inline-flex items-center gap-2 border-b border-ink pb-0.5 text-base font-medium text-ink transition-opacity hover:opacity-70"
+        className="inline-flex items-center gap-2 rounded-full bg-orange px-6 py-3 text-sm font-bold text-ink shadow-orange-lg transition-transform hover:scale-[1.03]"
       >
         Send inquiry
         <span aria-hidden="true">→</span>
       </button>
       {sent && (
-        <p className="text-sm text-mute">
+        <p className="text-sm text-paper-soft">
           Your email client should open. If nothing happens, write to{" "}
-          <a href={`mailto:${brand.email}`} className="underline">
+          <a href={`mailto:${brand.email}`} className="text-orange hover:underline">
             {brand.email}
-          </a>
-          .
+          </a>.
         </p>
       )}
     </form>

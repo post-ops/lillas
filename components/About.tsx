@@ -1,96 +1,87 @@
 import Image from "next/image";
-import { brand, images } from "@/lib/config";
+import { brand, images, stats } from "@/lib/config";
+import { Reveal, RevealStagger, RevealItem } from "./ui/Reveal";
 
 export default function About() {
   return (
-    <section id="about" className="relative">
-      <div className="mx-auto max-w-[1400px] px-6 py-28 lg:px-12 lg:py-40">
-        <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-ink/50">
-          About
-        </p>
+    <section id="about" className="relative border-t border-border py-28 lg:py-40">
+      <div className="pointer-events-none absolute inset-0 mesh-gradient" />
+      <div className="relative mx-auto max-w-[1400px] px-6 lg:px-12">
+        <Reveal>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-orange">
+            About Lilaas
+          </p>
+          <h2 className="mt-5 max-w-4xl text-4xl font-black leading-[1.05] tracking-tight text-paper sm:text-5xl lg:text-[72px]">
+            Sixty-five years of <span className="gradient-text">maritime control</span> engineering.
+          </h2>
+        </Reveal>
 
-        <h2 className="font-display mt-8 max-w-5xl text-4xl font-normal leading-[1.02] tracking-[-0.02em] text-ink sm:text-5xl lg:text-[80px]">
-          Sixty-five years of<br />
-          <em className="italic">maritime control engineering</em>,<br />
-          in one workshop in Horten.
-        </h2>
-
-        <div className="mt-20 grid gap-16 lg:grid-cols-12">
-          <div className="lg:col-span-6 lg:col-start-1">
-            <div className="space-y-6 text-[17px] leading-[1.7] text-ink-soft">
+        <div className="mt-16 grid gap-12 lg:grid-cols-12">
+          <Reveal delay={0.05} className="lg:col-span-7">
+            <div className="space-y-5 text-[17px] leading-[1.75] text-paper-soft">
               <p>
-                Lilaas was founded in {brand.founded} by Jan Lilaas. Today we
-                are {brand.employees} people — mechanics, electronics engineers,
-                and software developers — working under one roof on
-                Kongeveien 75 in Horten, forty kilometres south of Oslo.
+                Lilaas was founded in {brand.founded} by Jan Lilaas in Horten, Norway.
+                Today the company employs {brand.employees} people across mechanics,
+                electronics, and software — all disciplines under one roof.
+                Roughly {brand.exportShare}% of production is exported, most of
+                it through the world's leading system integrators and shipyards.
               </p>
               <p>
-                About {brand.exportShare}% of what we make leaves the country.
-                Most of it is installed on bridges built by the world's leading
-                shipyards and system integrators. The remaining work is
-                precision mechanics for defence, medicine, and scientific
-                research — including CERN's Large Hadron Collider.
-              </p>
-              <p>
-                We design, engineer, and produce everything in-house. It is
-                slower than outsourcing. It is how we solve the problems other
+                The business is split across {brand.revenueShare.maritime}% maritime
+                — control levers, joysticks, and bridge consoles — and{" "}
+                {brand.revenueShare.precision}% precision mechanics for defence,
+                medical, and scientific equipment. We solve problems other
                 suppliers cannot.
               </p>
             </div>
 
-            <blockquote className="mt-12 max-w-xl border-l-2 border-brass pl-6">
-              <p className="font-display text-2xl italic leading-snug text-ink lg:text-3xl">
+            <div className="mt-10 glass glow-border rounded-2xl p-8">
+              <p className="text-[19px] italic leading-relaxed text-paper">
                 "{brand.ceoQuote}"
               </p>
-              <footer className="mt-4 text-sm text-mute">
+              <p className="mt-4 text-sm text-mute">
                 — {brand.ceo}, Managing Director
-              </footer>
-            </blockquote>
-          </div>
+              </p>
+            </div>
+          </Reveal>
 
-          <div className="lg:col-span-6 lg:col-start-7">
-            <Image
-              src={images.factory}
-              alt="Lilaas production floor in Horten, Norway"
-              width={1024}
-              height={683}
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              className="h-auto w-full"
-              unoptimized
-            />
-            <p className="mt-4 text-sm text-mute">
-              Production floor, Kongeveien 75, Horten.
-            </p>
-          </div>
+          <Reveal delay={0.15} className="lg:col-span-5">
+            <div className="relative overflow-hidden rounded-2xl border border-border">
+              <Image
+                src={images.factory}
+                alt="Lilaas production floor in Horten, Norway"
+                width={1024}
+                height={683}
+                sizes="(max-width: 1024px) 100vw, 40vw"
+                className="h-auto w-full"
+                unoptimized
+              />
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/90 to-transparent p-5">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-orange-light">
+                  Kongeveien 75, Horten
+                </p>
+                <p className="text-sm text-paper/85">Production floor.</p>
+              </div>
+            </div>
+          </Reveal>
         </div>
-      </div>
 
-      <HeritageStrip />
+        <RevealStagger className="mt-20 grid grid-cols-2 gap-4 lg:grid-cols-4">
+          {stats.map((s) => (
+            <RevealItem key={s.label}>
+              <div className="glass glow-border rounded-xl p-6">
+                <div className="text-4xl font-black text-paper">
+                  {s.value}
+                  {s.label === "Exported globally" && <span className="text-orange">%</span>}
+                </div>
+                <div className="mt-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-mute">
+                  {s.label}
+                </div>
+              </div>
+            </RevealItem>
+          ))}
+        </RevealStagger>
+      </div>
     </section>
-  );
-}
-
-function HeritageStrip() {
-  const items: { n: string; l: string }[] = [
-    { n: "1961", l: "Founded in Horten" },
-    { n: "60", l: "Engineers and machinists" },
-    { n: "50%", l: "Exported worldwide" },
-    { n: "1000s", l: "Vessels under way" },
-  ];
-  return (
-    <div className="border-y border-line bg-paper-2">
-      <div className="mx-auto grid max-w-[1400px] grid-cols-2 divide-x divide-line px-6 lg:grid-cols-4 lg:px-12">
-        {items.map((it) => (
-          <div key={it.l} className="px-4 py-10 first:pl-0 last:pr-0 lg:py-16">
-            <div className="font-display text-5xl font-normal leading-none tracking-[-0.03em] text-ink lg:text-[88px]">
-              {it.n}
-            </div>
-            <div className="mt-4 text-xs uppercase tracking-[0.18em] text-ink/55">
-              {it.l}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
   );
 }

@@ -1,60 +1,63 @@
 import { brand } from "@/lib/config";
 import ContactForm from "./ContactForm";
+import { Reveal } from "./ui/Reveal";
 
 export default function Contact() {
   return (
-    <section id="contact" className="relative bg-paper">
-      <div className="mx-auto max-w-[1400px] px-6 py-28 lg:px-12 lg:py-40">
-        <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-ink/50">
-          Contact
-        </p>
-        <h2 className="font-display mt-6 max-w-4xl text-4xl font-normal leading-[1.02] tracking-[-0.02em] text-ink sm:text-5xl lg:text-[72px]">
-          Talk to our<br />
-          <em className="italic">engineering team.</em>
-        </h2>
+    <section id="contact" className="relative border-t border-border py-28 lg:py-40">
+      <div className="pointer-events-none absolute inset-0 mesh-ocean" />
+      <div className="relative mx-auto max-w-[1400px] px-6 lg:px-12">
+        <Reveal>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-orange">
+            Contact
+          </p>
+          <h2 className="mt-5 max-w-3xl text-4xl font-black leading-[1.05] tracking-tight text-paper sm:text-5xl lg:text-[72px]">
+            Talk to our <span className="gradient-text">engineering team.</span>
+          </h2>
+          <p className="mt-6 max-w-xl text-[17px] leading-relaxed text-paper-soft">
+            Ask about specs, request a quote, or arrange a visit to our Horten facility.
+            Typical reply within one business day.
+          </p>
+        </Reveal>
 
-        <div className="mt-20 grid gap-16 lg:grid-cols-12 lg:gap-24">
-          <address className="not-italic lg:col-span-5">
-            <dl className="space-y-10">
-              <div>
-                <dt className="text-[11px] uppercase tracking-[0.18em] text-ink/55">
+        <div className="mt-16 grid gap-10 lg:grid-cols-12 lg:gap-12">
+          <Reveal delay={0.05} className="lg:col-span-5">
+            <div className="space-y-5">
+              <div className="glass glow-border rounded-2xl p-6">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-orange">
                   Office
-                </dt>
-                <dd className="mt-3 text-lg text-ink">{brand.location}</dd>
+                </div>
+                <div className="mt-2 text-base text-paper">{brand.location}</div>
               </div>
-              <div>
-                <dt className="text-[11px] uppercase tracking-[0.18em] text-ink/55">
+              <div className="glass glow-border rounded-2xl p-6">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-orange">
                   Phone
-                </dt>
-                <dd className="mt-3 text-lg">
-                  <a
-                    href={`tel:${brand.phone.replace(/\s/g, "")}`}
-                    className="text-ink transition-opacity hover:opacity-70"
-                  >
-                    {brand.phone}
-                  </a>
-                  <span className="ml-3 text-sm text-mute">({brand.phoneHours})</span>
-                </dd>
+                </div>
+                <a
+                  href={`tel:${brand.phone.replace(/\s/g, "")}`}
+                  className="mt-2 inline-block text-base text-paper transition-colors hover:text-orange"
+                >
+                  {brand.phone}
+                </a>
+                <span className="ml-3 text-sm text-mute">({brand.phoneHours})</span>
               </div>
-              <div>
-                <dt className="text-[11px] uppercase tracking-[0.18em] text-ink/55">
+              <div className="glass glow-border rounded-2xl p-6">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-orange">
                   Email
-                </dt>
-                <dd className="mt-3 text-lg">
-                  <a
-                    href={`mailto:${brand.email}`}
-                    className="text-ink transition-opacity hover:opacity-70"
-                  >
-                    {brand.email}
-                  </a>
-                </dd>
+                </div>
+                <a
+                  href={`mailto:${brand.email}`}
+                  className="mt-2 inline-block text-base text-paper transition-colors hover:text-orange"
+                >
+                  {brand.email}
+                </a>
               </div>
-            </dl>
-          </address>
+            </div>
+          </Reveal>
 
-          <div className="lg:col-span-7">
+          <Reveal delay={0.15} className="lg:col-span-7">
             <ContactForm />
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>
