@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const inter = Inter({
@@ -14,14 +15,31 @@ const jetbrains = JetBrains_Mono({
   variable: "--font-mono",
 });
 
+const title = "Lilaas — Control at Sea. Since 1961.";
+const description =
+  "World-leading manufacturer of maritime control levers, joysticks and bridge systems. Engineered and produced in Horten, Norway since 1961. Trusted by Kongsberg Maritime, Wärtsilä and CERN.";
+
 export const metadata: Metadata = {
-  title: "Lilaas — Control at Sea. Since 1961.",
-  description:
-    "World-leading manufacturer of maritime control levers, joysticks and bridge systems. Engineered and produced in Horten, Norway since 1961. Trusted by Kongsberg Maritime, Wärtsilä and CERN.",
+  metadataBase: new URL("https://lilaas.no"),
+  title,
+  description,
   keywords: [
     "Lilaas", "control lever", "joystick", "maritime", "DNV",
     "Kongsberg", "Wärtsilä", "bridge console", "Horten", "Norway",
   ],
+  openGraph: {
+    title,
+    description,
+    url: "/",
+    siteName: "Lilaas",
+    locale: "en_NO",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+  },
 };
 
 export default function RootLayout({
@@ -31,7 +49,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${jetbrains.variable}`}>
-      <body className="min-h-screen bg-primary antialiased">{children}</body>
+      <body className="min-h-screen bg-primary antialiased">
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
