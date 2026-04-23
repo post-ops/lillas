@@ -1,5 +1,5 @@
 import { products } from "@/lib/config";
-import ProductCard from "./ProductCard.new";
+import ProductCard from "./ProductCard";
 
 export default function Products() {
   return (

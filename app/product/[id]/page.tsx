@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import ProductPage from "@/components/ProductPage.new";
-import Navbar from "@/components/Navbar.new";
-import Footer from "@/components/Footer.new";
+import ProductPage from "@/components/ProductPage";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import { products } from "@/lib/config";
 
 export function generateStaticParams() {

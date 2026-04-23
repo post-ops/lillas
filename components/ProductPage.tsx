@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { brand, products } from "@/lib/config";
-import ProductCard from "./ProductCard.new";
+import ProductCard from "./ProductCard";
 
 type Product = (typeof products)[number];
 

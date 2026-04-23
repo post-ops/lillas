@@ -1,11 +1,11 @@
-import Navbar from "./Navbar.new";
-import Hero from "./Hero.new";
-import About from "./About.new";
-import Products from "./Products.new";
-import Industries from "./Industries.new";
-import Clients from "./Clients.new";
-import Contact from "./Contact.new";
-import Footer from "./Footer.new";
+import Navbar from "./Navbar";
+import Hero from "./Hero";
+import About from "./About";
+import Products from "./Products";
+import Industries from "./Industries";
+import Clients from "./Clients";
+import Contact from "./Contact";
+import Footer from "./Footer";
 
 export default function MainSite() {
   return (

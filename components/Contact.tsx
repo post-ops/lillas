@@ -1,5 +1,5 @@
 import { brand } from "@/lib/config";
-import ContactForm from "./ContactForm.new";
+import ContactForm from "./ContactForm";
 
 export default function Contact() {
   return (
