@@ -1,14 +1,12 @@
-import Image from "next/image";
-
 const CLIENTS = [
-  { name: "Kongsberg Maritime", file: "/logos/kongsberg.svg" },
-  { name: "Wärtsilä", file: "/logos/wartsila.svg" },
-  { name: "CERN", file: "/logos/cern.svg" },
-  { name: "DNV", file: "/logos/dnv.svg" },
-  { name: "Rolls-Royce", file: "/logos/rolls-royce.svg" },
-  { name: "ABB", file: "/logos/abb.svg" },
-  { name: "Ulstein", file: "/logos/ulstein.svg" },
-  { name: "Havyard", file: "/logos/havyard.svg" },
+  "Kongsberg Maritime",
+  "Wärtsilä",
+  "CERN",
+  "DNV",
+  "Rolls-Royce Marine",
+  "ABB Marine",
+  "Ulstein Group",
+  "Havyard",
 ];
 
 export default function Clients() {
@@ -23,28 +21,26 @@ export default function Clients() {
             Trusted by leading marine and science companies.
           </h2>
           <p className="mt-5 text-lg leading-relaxed text-white/70">
-            Lilaas' levers have served the world's top system integrators,
-            shipyards, and research institutions since 1961.
+            Lilaas' levers serve the world's top system integrators, shipyards,
+            and research institutions — on vessels in every major flag state,
+            and on instruments at CERN.
           </p>
         </div>
 
-        <div className="mt-14 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-white/5 bg-white/5 sm:grid-cols-4">
-          {CLIENTS.map((c) => (
-            <div
-              key={c.name}
-              className="flex h-24 items-center justify-center bg-[#0b0e14] p-6 grayscale opacity-60 transition hover:opacity-100 hover:grayscale-0"
+        <ul className="mt-14 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-white/5 bg-white/5 sm:grid-cols-4">
+          {CLIENTS.map((name) => (
+            <li
+              key={name}
+              className="flex h-24 items-center justify-center bg-[#0b0e14] px-6 text-center text-base font-semibold text-white/75 transition-colors hover:text-white"
             >
-              <Image
-                src={c.file}
-                alt={c.name}
-                width={140}
-                height={40}
-                className="h-8 w-auto max-w-full object-contain"
-                unoptimized
-              />
-            </div>
+              {name}
+            </li>
           ))}
-        </div>
+        </ul>
+
+        <p className="mt-6 text-xs text-white/40">
+          Non-exhaustive list. References available on request.
+        </p>
       </div>
     </section>
   );
